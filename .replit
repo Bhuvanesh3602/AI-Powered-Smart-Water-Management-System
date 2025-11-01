@@ -6,3 +6,6 @@ channel = "stable-25_05"
 [deployment]
 deploymentTarget = "autoscale"
 run = ["streamlit", "run", "app.py", "--server.port", "5000"]
+
+[agent]
+integrations = ["python_gemini:1.0.0"]
