@@ -10,3 +10,35 @@ run = ["streamlit", "run", "app.py", "--server.port", "5000"]
 
 [agent]
 integrations = ["python_gemini:1.0.0"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "streamlit_app"
+
+[[workflows.workflow]]
+name = "streamlit_app"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "streamlit run app.py --server.port 5000"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 45167
+externalPort = 3000
