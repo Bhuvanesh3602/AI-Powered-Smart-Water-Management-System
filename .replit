@@ -2,6 +2,7 @@ modules = ["python-3.11"]
 
 [nix]
 channel = "stable-25_05"
+packages = ["glibcLocales", "libxcrypt"]
 
 [deployment]
 deploymentTarget = "autoscale"
