@@ -1,38 +1,42 @@
-import json
-import logging
 import os
+import requests
+import json
 
-from google import genai
-from google.genai import types
-from pydantic import BaseModel
+# 🔹 Set your Gemini API key (Replace with your actual key or set via environment variable)
+os.environ["GEMINI_API_KEY"] = "YOUR_API_KEY_HERE"
+
+# 🔹 Gemini REST API endpoint
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+
+# 🔹 Helper function to call Gemini API
+def call_gemini_api(prompt: str) -> str:
+    headers = {
+        "Content-Type": "application/json",
+        "x-goog-api-key": os.environ.get("GEMINI_API_KEY")
+    }
+
+    data = {
+        "contents": [
+            {"parts": [{"text": prompt}]}
+        ]
+    }
+
+    response = requests.post(GEMINI_URL, headers=headers, data=json.dumps(data))
+
+    if response.status_code == 200:
+        try:
+            # Extract text safely from response JSON
+            return response.json()["candidates"][0]["content"]["parts"][0]["text"]
+        except Exception:
+            return "⚠️ Could not parse Gemini API response."
+    else:
+        return f"❌ Error {response.status_code}: {response.text}"
 
 
-# IMPORTANT: KEEP THIS COMMENT
-# Follow these instructions when using this blueprint:
-# - Note that the newest Gemini model series is "gemini-2.5-flash" or gemini-2.5-pro"
-#   - do not change this unless explicitly requested by the user
-# - Sometimes the google genai SDK has occasional type errors. You might need to run to validate, at time.  
-# The SDK was recently renamed from google-generativeai to google-genai. This file reflects the new name and the new APIs.
-
-# This API key is from Gemini Developer API Key, not vertex AI API Key
-def get_client():
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        return None
-    try:
-        return genai.Client(api_key=api_key)
-    except Exception as e:
-        print(f"Error initializing Gemini client: {e}")
-        return None
-
-
+# 🔹 Generate Water Conservation Tips
 def generate_water_conservation_tips(usage_data: dict) -> str:
-    client = get_client()
-    if not client:
-        return "⚠️ Gemini API key not configured. Please add your GEMINI_API_KEY to use AI-powered features."
-    
     prompt = f"""
-    Based on the following water usage data, provide 3-5 personalized, actionable water conservation tips.
+    Based on the following water usage data, provide 3–5 personalized, actionable water conservation tips.
     
     Usage Data:
     - Average Daily Usage: {usage_data.get('avg_daily_usage', 'N/A')} liters
@@ -43,20 +47,11 @@ def generate_water_conservation_tips(usage_data: dict) -> str:
     Provide practical, friendly advice that can help reduce water consumption.
     Format each tip as a bullet point with estimated water savings.
     """
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-
-    return response.text or "Unable to generate conservation tips at this time."
+    return call_gemini_api(prompt)
 
 
+# 🔹 Answer Water Usage Question
 def answer_water_usage_question(question: str, context_data: dict) -> str:
-    client = get_client()
-    if not client:
-        return "⚠️ Gemini API key not configured. Please add your GEMINI_API_KEY to use AI-powered features."
-    
     prompt = f"""
     You are AquaMind, an AI assistant specialized in water management and conservation.
     
@@ -74,20 +69,11 @@ def answer_water_usage_question(question: str, context_data: dict) -> str:
     Provide a clear, helpful answer based on the available data. If you don't have enough information,
     explain what data would be needed to answer the question accurately.
     """
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-
-    return response.text or "I'm unable to answer that question at this time."
+    return call_gemini_api(prompt)
 
 
+# 🔹 Predict Water Usage Insights
 def predict_water_usage_insights(usage_history: list, prediction: float) -> str:
-    client = get_client()
-    if not client:
-        return "⚠️ Gemini API key not configured. Please add your GEMINI_API_KEY to use AI-powered features."
-    
     prompt = f"""
     Analyze this water usage pattern and provide insights:
     
@@ -102,20 +88,11 @@ def predict_water_usage_insights(usage_history: list, prediction: float) -> str:
     
     Keep the response concise and actionable.
     """
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-
-    return response.text or "Unable to generate insights at this time."
+    return call_gemini_api(prompt)
 
 
+# 🔹 Analyze Anomaly
 def analyze_anomaly(anomaly_data: dict) -> str:
-    client = get_client()
-    if not client:
-        return "⚠️ Gemini API key not configured. Please add your GEMINI_API_KEY to use AI-powered features."
-    
     prompt = f"""
     Analyze this water usage anomaly and provide diagnostic information:
     
@@ -133,10 +110,17 @@ def analyze_anomaly(anomaly_data: dict) -> str:
     
     Be specific and actionable.
     """
+    return call_gemini_api(prompt)
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
 
-    return response.text or "Unable to analyze anomaly at this time."
+# 🔹 Example Test (Run directly)
+if __name__ == "__main__":
+    test_data = {
+        "avg_daily_usage": 135,
+        "peak_time": "7:00 AM",
+        "anomalies_count": 2,
+        "trend": "Slightly increasing"
+    }
+
+    print("💧 Generating Water Conservation Tips...\n")
+    print(generate_water_conservation_tips(test_data))

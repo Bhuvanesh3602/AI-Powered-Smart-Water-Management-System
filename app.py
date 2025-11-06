@@ -137,7 +137,7 @@ def show_dashboard(df, flow_col, data_manager):
                 hovermode='x unified',
                 height=400
             )
-            st.plotly_chart(fig, width="stretch")
+            st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No daily usage data available")
     
@@ -158,7 +158,7 @@ def show_dashboard(df, flow_col, data_manager):
                 yaxis_title="Avg Flow Rate (L/min)",
                 height=400
             )
-            st.plotly_chart(fig, width="stretch")
+            st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No hourly pattern data available")
     
@@ -171,7 +171,7 @@ def show_dashboard(df, flow_col, data_manager):
         labels={flow_col: "Flow Rate (L/min)", "count": "Frequency"}
     )
     fig.update_traces(marker_color='#ff7f0e')
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig, use_container_width=True)
     
     if 'timestamp' in df.columns:
         st.subheader("Time Series Flow Rate")
@@ -192,7 +192,7 @@ def show_dashboard(df, flow_col, data_manager):
             yaxis_title="Flow Rate (L/min)",
             height=400
         )
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
 def show_anomaly_detection(df, flow_col, anomaly_detector, data_manager):
     st.header("🚨 Anomaly & Leak Detection")
@@ -303,8 +303,7 @@ def show_anomaly_detection(df, flow_col, anomaly_detector, data_manager):
                     hovermode='closest',
                     height=500
                 )
-                
-                st.plotly_chart(fig, width="stretch")
+                st.plotly_chart(fig, use_container_width=True)
                 
                 if summary['total_anomalies'] > 0 and len(leak_alerts) > 0:
                     st.subheader("🤖 AI Anomaly Analysis")
@@ -416,11 +415,11 @@ def show_predictions(df, flow_col, predictor_rf, predictor_lstm):
                         height=500
                     )
                     
-                    st.plotly_chart(fig, width="stretch")
+                    st.plotly_chart(fig, use_container_width=True)
                     
                     st.subheader("Predicted Values")
                     pred_df_display = prepare_df_for_display(pred_df)
-                    st.dataframe(pred_df_display, width="stretch")
+                    st.dataframe(pred_df_display, use_container_width=True)
                     
                     st.subheader("🤖 AI Prediction Insights")
                     
@@ -594,13 +593,13 @@ def show_raw_data(df, data_manager):
     
     if view_mode == "Head":
         df_view = prepare_df_for_display(df.head(num_rows))
-        st.dataframe(df_view, width="stretch")
+        st.dataframe(df_view, use_container_width=True)
     elif view_mode == "Tail":
         df_view = prepare_df_for_display(df.tail(num_rows))
-        st.dataframe(df_view, width="stretch")
+        st.dataframe(df_view, use_container_width=True)
     else:
         df_view = prepare_df_for_display(df.sample(min(num_rows, len(df))))
-        st.dataframe(df_view, width="stretch")
+        st.dataframe(df_view, use_container_width=True)
     
     st.subheader("Dataset Information")
     
@@ -616,7 +615,7 @@ def show_raw_data(df, data_manager):
     
     st.subheader("Statistical Summary")
     df_stats = df.select_dtypes(include=[np.number]).describe()
-    st.dataframe(df_stats, width="stretch")
+    st.dataframe(df_stats, use_container_width=True)
 
 if __name__ == "__main__":
     data_manager, _, _, _ = initialize_components()
