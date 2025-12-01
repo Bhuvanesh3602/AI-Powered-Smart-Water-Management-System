@@ -21,7 +21,7 @@ This repository contains both a top-level lightweight script set and a package-s
 - `data_manager.py` / `SmartWaterPredictor/data_manager.py` - dataset loading and utilities.  
 - `predictor.py` / `SmartWaterPredictor/predictor.py` - prediction logic and model wrapper.  
 - `anomaly_detector.py` / `SmartWaterPredictor/anomaly_detector.py` - simple anomaly detection helpers.  
-- `SmartWaterPredictor/gemini_helper.py` - small REST wrapper to call the Gemini generateContent endpoint.  
+- `SmartWaterPredictor/gemini_helper.py` - small REST wrapper to call the Gemini generateContent endpoint
 - `pyproject.toml` - project metadata.  
 - `attached_assets/` - example assets and prompt files.
 
