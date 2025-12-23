@@ -8,7 +8,7 @@ This repository contains both a top-level lightweight script set and a package-s
 
 ## Key features
 
-- Load and normalize water usage datasets (CSV).  
+- Load and normalize water usage datasets (CSV)
 - Compute usage statistics, daily/ hourly aggregates, and basic anomaly detection.  
 - A simple predictor for short-term water usage forecasting
 - Streamlit UI (`app.py`) to explore data, labels, anomalies, and predictions.  
